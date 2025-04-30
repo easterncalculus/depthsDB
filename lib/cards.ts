@@ -83,6 +83,7 @@ export interface CardSearchOptions {
   side?: string;
   type?: string;
   search?: string;
+  limit?: number;
 }
 
 // CRUD Operations
@@ -94,21 +95,27 @@ export async function getAllCards(options: CardSearchOptions = {}): Promise<Base
   if (options.side) filter.side = options.side;
   if (options.type) filter.type = options.type;
   
-  // Add search term if provided (searches in name and description)
+  // Add search term if provided - only searches in name field
   if (options.search) {
-    filter.OR = [
-      { name: { contains: options.search } },
-      { description: { contains: options.search } }
-    ];
+    filter.name = { contains: options.search };
+  }
+
+  // Set up the query
+  const query: any = {
+    where: filter,
+    orderBy: { name: 'asc' },
+  };
+  
+  // Apply limit if provided
+  if (options.limit && options.limit > 0) {
+    query.take = options.limit;
   }
   
-  const cards = await prisma.card.findMany({
-    where: filter,
-    orderBy: { createdAt: 'desc' },
-  });
+  const cards = await prisma.card.findMany(query);
   
   return cards.map(formatCard);
 }
+
 
 export async function getCardById(id: number): Promise<BaseCard | null> {
   const card = await prisma.card.findUnique({

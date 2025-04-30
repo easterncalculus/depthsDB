@@ -138,7 +138,7 @@ export default function RulesPage() {
         {/* Search and Filters */}
         <SearchBar 
           onSearch={handleSearch}
-          placeholder="Search by name or description..."
+          placeholder="Search by rule name..."
         />
         
         <div className={styles.filterGroup} style={{ width: '100%', maxWidth: '600px' }}>

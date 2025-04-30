@@ -140,7 +140,7 @@ export default function Cards() {
         {/* Search and Filters */}
         <SearchBar 
           onSearch={handleSearch} 
-          placeholder="Search by name or description..." 
+          placeholder="Search by card name..." 
         />
         
         <div className={styles.filtersContainer}>

@@ -95,16 +95,41 @@ const EnhancedReferenceAutocomplete = ({
       try {
         // Construct URL with query parameters
         const params = new URLSearchParams();
-        params.append('query', query);
-        params.append('type', triggerChar);
+        params.append('search', query);
+        // Name-only search is now the default behavior
+        params.append('limit', '10');      // Limit to 10 results for better performance
         
-        console.log(`Searching ${triggerChar === '#' ? 'cards' : 'rules'}: ${query}`);
+        let endpoint;
+        if (triggerChar === '#') {
+          // For cards, use the cards API
+          endpoint = '/api/cards';
+          console.log(`Searching cards: ${query}`);
+        } else {
+          // For rules, use the rules API
+          endpoint = '/api/rules';
+          console.log(`Searching rules: ${query}`);
+        }
         
-        const response = await fetch(`/api/references/search?${params.toString()}`);
+        const response = await fetch(`${endpoint}?${params.toString()}`);
         if (response.ok) {
           const data = await response.json();
           console.log('Search results:', data);
-          setResults(data);
+          
+          // Format the results for the autocomplete dropdown
+          const formattedResults = data.map(item => {
+            const isCard = 'side' in item;
+            return {
+              id: item.id,
+              name: item.name,
+              type: item.type,
+              side: isCard ? item.side : undefined,
+              entityType: isCard ? 'card' : 'rule',
+              refCode: `${item.id}`,
+              refChar: isCard ? '#' : '$',
+            };
+          });
+          
+          setResults(formattedResults);
           setSelectedIndex(0);
         } else {
           console.error('API error:', response.status);

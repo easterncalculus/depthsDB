@@ -6,13 +6,16 @@ export default async function handler(req, res) {
     case 'GET':
       try {
         // Extract query parameters for filtering
-        const { side, type, search } = req.query;
+        const { side, type, search, limit } = req.query;
         
         // Create search options object
         const searchOptions = {};
         if (side) searchOptions.side = side;
         if (type) searchOptions.type = type;
         if (search) searchOptions.search = search;
+        
+        // Apply limit if specified (convert to number)
+        if (limit) searchOptions.limit = parseInt(limit, 10);
         
         // Get cards with search options
         const cards = await getAllCards(searchOptions);

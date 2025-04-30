@@ -20,7 +20,12 @@ const ReferenceLink = ({ reference, referenceData, children }) => {
     
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/references/${reference.type}/${reference.id}`);
+      // Use the appropriate API endpoint based on reference type
+      const endpoint = reference.type === 'r' 
+        ? `/api/rules/${reference.id}` 
+        : `/api/cards/${reference.id}`;
+        
+      const res = await fetch(endpoint);
       if (res.ok) {
         const data = await res.json();
         setFullReference(data);

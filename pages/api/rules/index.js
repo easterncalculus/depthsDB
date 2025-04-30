@@ -4,7 +4,7 @@ import { RuleType } from '../../../types/rule';
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
-      const { type, search } = req.query;
+      const { type, search, limit } = req.query;
       
       // Create search options object
       const searchOptions = {};
@@ -14,6 +14,9 @@ export default async function handler(req, res) {
       if (search) {
         searchOptions.search = search;
       }
+      
+      // Apply limit if specified (convert to number)
+      if (limit) searchOptions.limit = parseInt(limit, 10);
       
       // Get rules with search options
       const rules = await getAllRules(searchOptions);

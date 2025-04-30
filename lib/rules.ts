@@ -17,6 +17,7 @@ export const formatRule = (dbRule: any): Rule => {
 export interface RuleSearchOptions {
   type?: string;
   search?: string;
+  limit?: number;
 }
 
 // CRUD Operations
@@ -29,21 +30,27 @@ export async function getAllRules(options: RuleSearchOptions = {}): Promise<Rule
     filter.type = options.type;
   }
   
-  // Add search term if provided (searches in name and description)
+  // Add search term if provided - only searches in name field
   if (options.search) {
-    filter.OR = [
-      { name: { contains: options.search } },
-      { description: { contains: options.search } }
-    ];
+    filter.name = { contains: options.search };
   }
   
-  const rules = await prisma.rule.findMany({
+  // Set up the query
+  const query: any = {
     where: filter,
-    orderBy: { createdAt: 'desc' },
-  });
+    orderBy: { name: 'asc' },
+  };
+  
+  // Apply limit if provided
+  if (options.limit && options.limit > 0) {
+    query.take = options.limit;
+  }
+
+  const rules = await prisma.rule.findMany(query);
   
   return rules.map(formatRule);
 }
+
 
 export async function getRulesByType(type: RuleType): Promise<Rule[]> {
   return getAllRules({ type });
