@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import ReferenceText from '../../../utils/references';
 
 export default function RuleDetailPage() {
   const router = useRouter();
@@ -109,7 +110,14 @@ export default function RuleDetailPage() {
         
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-2">Description</h2>
-          <p className="text-gray-700 whitespace-pre-line">{rule.description}</p>
+          <div className="text-gray-700 whitespace-pre-line">
+            <ReferenceText text={rule.description} />
+          </div>
+        </div>
+        
+        <div className="mt-6 p-3 bg-gray-50 rounded-md border border-gray-200">
+          <h3 className="text-sm font-medium text-gray-500 mb-1">Reference This Rule</h3>
+          <code className="bg-gray-100 px-2 py-1 rounded text-sm">#r{rule.id}</code>
         </div>
         
         <div className="mt-6 text-sm text-gray-500">

@@ -189,6 +189,9 @@ export default function CardForm({ initialData }) {
           required
           rows={4}
         />
+        <small className={styles.formHelp}>
+          You can reference rules with <code>#r123</code> and other cards with <code>#c123</code> (where 123 is the ID).
+        </small>
       </div>
 
       <div className={styles.formGroup}>

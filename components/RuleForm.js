@@ -86,6 +86,9 @@ const RuleForm = ({ initialRule, onSubmit }) => {
           rows={5}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
+        <p className="mt-2 text-sm text-gray-500">
+          You can reference other rules with <code>#r123</code> and cards with <code>#c123</code> (where 123 is the ID).
+        </p>
       </div>
       
       <div className="flex justify-end space-x-3">

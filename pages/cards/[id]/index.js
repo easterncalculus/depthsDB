@@ -74,11 +74,11 @@ export default function CardDetail() {
         <h1 className={styles.title}>{card.name}</h1>
 
         <div className={styles.actions}>
-          <Link href="/cards" className={styles.button}>
-            Back to Cards
+          <Link href="/cards">
+            <span className={styles.button}>Back to Cards</span>
           </Link>
-          <Link href={`/cards/${id}/edit`} className={styles.button}>
-            Edit Card
+          <Link href={`/cards/${id}/edit`}>
+            <span className={styles.button}>Edit Card</span>
           </Link>
           <button onClick={handleDelete} className={styles.deleteButton}>
             Delete Card
@@ -87,6 +87,13 @@ export default function CardDetail() {
 
         <div className={styles.cardDetailContainer}>
           <CardDisplay card={card} />
+        </div>
+
+        <div className={styles.referenceInfo}>
+          <h3>Reference This Card</h3>
+          <p>
+            Use <code className={styles.referenceCode}>#c{id}</code> in any rule or card description to link to this card.
+          </p>
         </div>
 
         <div className={styles.metadata}>

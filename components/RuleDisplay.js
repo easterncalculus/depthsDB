@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import ReferenceText from '../utils/references';
 
 const RuleDisplay = ({ rule }) => {
   return (
@@ -11,15 +12,22 @@ const RuleDisplay = ({ rule }) => {
         </span>
       </div>
       
-      <p className="text-gray-700 mb-4">{rule.description}</p>
+      <div className="text-gray-700 mb-4">
+        <ReferenceText text={rule.description} />
+      </div>
       
-      <div className="flex justify-end space-x-2">
-        <Link href={`/rules/${rule.id}`}>
-          <span className="text-blue-500 hover:text-blue-700">View</span>
-        </Link>
-        <Link href={`/rules/${rule.id}/edit`}>
-          <span className="text-green-500 hover:text-green-700">Edit</span>
-        </Link>
+      <div className="flex justify-between items-center mt-4">
+        <div className="text-xs text-gray-500">
+          Reference ID: #r{rule.id}
+        </div>
+        <div className="flex space-x-2">
+          <Link href={`/rules/${rule.id}`}>
+            <span className="text-blue-500 hover:text-blue-700">View</span>
+          </Link>
+          <Link href={`/rules/${rule.id}/edit`}>
+            <span className="text-green-500 hover:text-green-700">Edit</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../styles/Home.module.css';
 import { CardSide, CardType } from '../types/card';
+import ReferenceText from '../utils/references';
 
 const CardDisplay = ({ card }) => {
   // Common card display elements
@@ -13,7 +14,12 @@ const CardDisplay = ({ card }) => {
           <> • <span>Subtypes: {card.subtypes.join(', ')}</span></>
         )}
       </div>
-      <p className={styles.cardDescription}>{card.description}</p>
+      <div className={styles.cardDescription}>
+        <ReferenceText text={card.description} />
+      </div>
+      <div className={styles.cardReference}>
+        <small>Reference ID: #c{card.id}</small>
+      </div>
     </>
   );
 
