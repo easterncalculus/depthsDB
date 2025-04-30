@@ -4,6 +4,7 @@
   "description": "Card game database web application",
   "scripts": {
     "dev": "next dev",
+    "dev:locator": "LOCATOR=true next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -27,6 +28,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@locator/runtime": "^0.4.4",
     "prisma": "^5.8.0"
   }
 }

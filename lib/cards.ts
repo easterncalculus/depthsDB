@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "./prisma";
 import {
   BaseCard,
   CardSide,
@@ -13,8 +13,6 @@ import {
   stringifyExits,
   stringifySubtypes
 } from "../types/card";
-
-const prisma = new PrismaClient();
 
 // Convert the Prisma Card model to our typed BaseCard and its subtypes
 export const formatCard = (dbCard: any): BaseCard => {

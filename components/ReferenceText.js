@@ -232,12 +232,18 @@ const ReferenceText = ({ text, references = {} }) => {
   let lastIndex = 0;
   
   // Clone the regex to reset lastIndex
-  const regex = new RegExp(/#([rc])(\d+)/g);
+  const regex = new RegExp(/<([#$])(\d+)(?:\|[^<>]*)?([#$])>/g);
   
   // Parse text and replace references
   let match;
   while ((match = regex.exec(text)) !== null) {
-    const [fullMatch, type, id] = match;
+    const [fullMatch, openChar, id, closeChar] = match;
+    
+    // Make sure the opening and closing characters match
+    if (openChar !== closeChar) continue;
+    
+    // Determine type based on character
+    const type = openChar === '$' ? 'r' : 'c';
     const refKey = `${type}${id}`;
     const reference = { type, id: parseInt(id, 10) };
     const referenceData = references[refKey];

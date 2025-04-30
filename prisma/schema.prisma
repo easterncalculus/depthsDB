@@ -10,67 +10,36 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-enum CardSide {
-  dungeon
-  hero
-  neutral
-}
-
-enum CardType {
-  heroIdentity
-  heroAsset
-  heroEvent
-  dungeonForm
-  dungeonVariant
-  dungeonRoom
-  neutralInfo
-}
-
-enum HeroArchetype {
-  warrior
-  mage
-  adventurer
-}
-
-enum DungeonArchetype {
-  maze
-  tomb
-  fortress
-  cavern
-}
-
-enum ExitType {
-  North
-  East
-  South
-  West
-  Special
-}
-
-enum RuleType {
-  General
-  Archetype
-  Type
-  Subtype
-  Keyword
-}
+// Note: SQLite doesn't support enums, so we use String type instead
+// but add comments to document the allowed values
 
 model Card {
   id                Int               @id @default(autoincrement())
   name              String
   description       String
   imageUrl          String?
-  side              CardSide
-  type              CardType
-  subtypes          String            // Stored as comma-separated values
+  
+  // Values: "dungeon", "hero", "neutral"
+  side              String           
+  
+  // Values: "heroIdentity", "heroAsset", "heroEvent", "dungeonForm", "dungeonVariant", "dungeonRoom", "neutralInfo"
+  type              String           
+  
+  // Stored as comma-separated values
+  subtypes          String            
   
   // Hero card specific fields
-  heroArchetype     HeroArchetype?
+  // Values: "warrior", "mage", "adventurer"
+  heroArchetype     String?           
   manaCost          Int?              // For heroCardEvent
   
   // Dungeon card specific fields
-  dungeonArchetype  DungeonArchetype?
-  exits             String?           // For dungeonCardRoom, stored as comma-separated ExitType values
+  // Values: "maze", "tomb", "fortress", "cavern"
+  dungeonArchetype  String?           
+  
+  // For dungeonCardRoom, stored as comma-separated values
+  // Values: "North", "East", "South", "West", "Special"
+  exits             String?           
   
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
@@ -80,7 +49,10 @@ model Rule {
   id                Int               @id @default(autoincrement())
   name              String
   description       String
-  type              RuleType
+  
+  // Values: "General", "Archetype", "Type", "Subtype", "Keyword"
+  type              String
+  
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
-import ReferenceAutocompleteSimple from './ReferenceAutocompleteSimple';
+import EnhancedReferenceAutocomplete from './EnhancedReferenceAutocomplete';
 
 const CardSide = {
   DUNGEON: 'dungeon',
@@ -192,9 +192,9 @@ export default function CardForm({ initialData }) {
             required
             rows={4}
             ref={descriptionRef}
-            placeholder="Type # to insert references (e.g., #r for rules, #c for cards)"
+            placeholder="Type # for card references or $ for rule references"
           />
-          <ReferenceAutocompleteSimple 
+          <EnhancedReferenceAutocomplete 
             textAreaRef={descriptionRef}
             onSelectReference={(reference) => {
               // Automatically update the form data when a reference is selected
@@ -207,8 +207,8 @@ export default function CardForm({ initialData }) {
           />
         </div>
         <small className={styles.formHelp}>
-          You can reference rules with <code>#r</code> and other cards with <code>#c</code> followed by text to search. 
-          Use arrow keys and Enter/Tab to select a reference.
+          You can reference cards with <code>#</code> and rules with <code>$</code> followed by text to search.
+          Use arrow keys and Enter/Tab to select a reference. References are formatted as <code>&lt;#123|Card Name#&gt;</code> or <code>&lt;$456|Rule Name$&gt;</code>.
         </small>
       </div>
 

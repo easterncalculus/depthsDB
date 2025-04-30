@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../lib/prisma';
 import { formatCard, prepareCardForDB } from '../../../lib/cards';
-
-const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   switch (req.method) {

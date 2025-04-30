@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { RuleType } from '../types/rule';
-import ReferenceAutocompleteSimple from './ReferenceAutocompleteSimple';
+import EnhancedReferenceAutocomplete from './EnhancedReferenceAutocomplete';
 
 const RuleForm = ({ initialRule, onSubmit }) => {
   const router = useRouter();
@@ -88,10 +88,10 @@ const RuleForm = ({ initialRule, onSubmit }) => {
             required
             rows={5}
             ref={descriptionRef}
-            placeholder="Type # to insert references (e.g., #r for rules, #c for cards)"
+            placeholder="Type # for card references or $ for rule references"
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
-          <ReferenceAutocompleteSimple 
+          <EnhancedReferenceAutocomplete 
             textAreaRef={descriptionRef}
             onSelectReference={(reference) => {
               // Automatically update the form data when a reference is selected
@@ -103,8 +103,8 @@ const RuleForm = ({ initialRule, onSubmit }) => {
           />
         </div>
         <p className="mt-2 text-sm text-gray-500">
-          You can reference other rules with <code>#r</code> and cards with <code>#c</code> followed by text to search. 
-          Use arrow keys and Enter/Tab to select a reference.
+          You can reference cards with <code>#</code> and rules with <code>$</code> followed by text to search.
+          Use arrow keys and Enter/Tab to select a reference. References are formatted as <code>&lt;#123|Card Name#&gt;</code> or <code>&lt;$456|Rule Name$&gt;</code>.
         </p>
       </div>
       

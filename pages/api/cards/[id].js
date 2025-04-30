@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../lib/prisma';
 import { formatCard, prepareCardForDB } from '../../../lib/cards';
 import { loadAllReferences } from '../../../lib/references';
-
-const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   const { id } = req.query;

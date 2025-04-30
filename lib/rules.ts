@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "./prisma";
 import { Rule, RuleType } from "../types/rule";
-
-const prisma = new PrismaClient();
 
 // Convert the Prisma Rule model to our typed Rule
 export const formatRule = (dbRule: any): Rule => {

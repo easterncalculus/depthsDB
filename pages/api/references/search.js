@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../../../lib/prisma";
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -19,7 +17,7 @@ export default async function handler(req, res) {
     let results = [];
 
     // If type is specified, only search that type
-    if (type === 'r' || type === 'rule') {
+    if (type === 'r' || type === 'rule' || type === '$') {
       // Search rules by name
       const rules = await prisma.rule.findMany({
         where: {
@@ -38,15 +36,17 @@ export default async function handler(req, res) {
         take: 10,
       });
 
+      // For rules, format with '$' for the new syntax
       results = rules.map(rule => ({
         id: rule.id,
         name: rule.name,
         type: rule.type,
         entityType: 'rule',
-        refCode: `r${rule.id}`,
+        refCode: `${rule.id}`,
+        refChar: '$',
       }));
     } 
-    else if (type === 'c' || type === 'card') {
+    else if (type === 'c' || type === 'card' || type === '#') {
       // Search cards by name
       const cards = await prisma.card.findMany({
         where: {
@@ -66,74 +66,47 @@ export default async function handler(req, res) {
         take: 10,
       });
 
+      // For cards, format with '#' for the new syntax
       results = cards.map(card => ({
         id: card.id,
         name: card.name,
         side: card.side,
         type: card.type,
         entityType: 'card',
-        refCode: `c${card.id}`,
+        refCode: `${card.id}`,
+        refChar: '#',
       }));
     } 
     else {
-      // Search both rules and cards
-      const [rules, cards] = await Promise.all([
-        prisma.rule.findMany({
-          where: {
-            name: {
-              contains: searchPattern,
-            },
+      // Default to searching cards if no type is specified
+      const cards = await prisma.card.findMany({
+        where: {
+          name: {
+            contains: searchPattern,
           },
-          select: {
-            id: true,
-            name: true,
-            type: true,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-          take: 5,
-        }),
-        prisma.card.findMany({
-          where: {
-            name: {
-              contains: searchPattern,
-            },
-          },
-          select: {
-            id: true,
-            name: true,
-            side: true,
-            type: true,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-          take: 5,
-        }),
-      ]);
+        },
+        select: {
+          id: true,
+          name: true,
+          side: true,
+          type: true,
+        },
+        orderBy: {
+          name: 'asc',
+        },
+        take: 10,
+      });
 
-      // Format rule results
-      const ruleResults = rules.map(rule => ({
-        id: rule.id,
-        name: rule.name,
-        type: rule.type, 
-        entityType: 'rule',
-        refCode: `r${rule.id}`,
-      }));
-
-      // Format card results
-      const cardResults = cards.map(card => ({
+      // For cards, format with '#' for the new syntax
+      results = cards.map(card => ({
         id: card.id,
         name: card.name,
         side: card.side,
         type: card.type,
         entityType: 'card',
-        refCode: `c${card.id}`,
+        refCode: `${card.id}`,
+        refChar: '#',
       }));
-
-      // Combine results
-      results = [...ruleResults, ...cardResults];
     }
 
     return res.status(200).json(results);
