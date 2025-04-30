@@ -5,7 +5,7 @@ import ReferenceText from './ReferenceText';
 
 const RuleDisplay = ({ rule, showActions = true }) => {
   return (
-    <div className={`${styles.cardDisplay} ${styles.ruleDisplay} ${styles[`rule${rule.type}`]}`}>
+    <div className={`${styles.cardDisplay} ${styles.ruleDisplay} ${styles[`rule${rule.type}`]} ${styles.cardItem}`}>
       <div className={styles.cardContent}>
         {/* Header section */}
         <div className={styles.ruleHeader}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import { CardSide, CardType } from '../types/card';
 import ReferenceText from './ReferenceText';
@@ -7,7 +8,7 @@ const CardDisplay = ({ card }) => {
   // Common card display elements
   const renderCommonInfo = () => (
     <>
-      <h2>{card.name}</h2>
+      <Link href={`/cards/${card.id}`}><h2>{card.name}</h2></Link>
       <div className={styles.cardMeta}>
         <span>Side: {card.side}</span> • <span>Type: {card.type}</span>
         {card.subtypes && card.subtypes.length > 0 && (
@@ -60,7 +61,7 @@ const CardDisplay = ({ card }) => {
   };
 
   return (
-    <div className={`${styles.cardDisplay} ${styles[`card${card.side}`]}`}>
+    <div className={`${styles.cardDisplay} ${styles[`card${card.side}`]} ${styles.cardItem}`}>
       {renderCardImage()}
       <div className={styles.cardContent}>
         {renderCommonInfo()}

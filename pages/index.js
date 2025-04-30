@@ -80,8 +80,13 @@ export default function Home() {
           <Link href="/rules/create">
             <span className={styles.button}>Add New Rule</span>
           </Link>
+          </div>
+          <div className={styles.actions}>
+          <Link href="/cards">
+            <span className={styles.button}>View Cards</span>
+          </Link>
           <Link href="/rules">
-            <span className={styles.button}>View Game Rules</span>
+            <span className={styles.button}>View Rules</span>
           </Link>
         </div>
 

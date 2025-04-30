@@ -13,20 +13,40 @@ export const formatRule = (dbRule: any): Rule => {
   };
 };
 
+// Search options interface
+export interface RuleSearchOptions {
+  type?: string;
+  search?: string;
+}
+
 // CRUD Operations
-export async function getAllRules(): Promise<Rule[]> {
+export async function getAllRules(options: RuleSearchOptions = {}): Promise<Rule[]> {
+  // Build filter based on search options
+  const filter: any = {};
+  
+  // Add type filter if provided
+  if (options.type) {
+    filter.type = options.type;
+  }
+  
+  // Add search term if provided (searches in name and description)
+  if (options.search) {
+    filter.OR = [
+      { name: { contains: options.search } },
+      { description: { contains: options.search } }
+    ];
+  }
+  
   const rules = await prisma.rule.findMany({
+    where: filter,
     orderBy: { createdAt: 'desc' },
   });
+  
   return rules.map(formatRule);
 }
 
 export async function getRulesByType(type: RuleType): Promise<Rule[]> {
-  const rules = await prisma.rule.findMany({
-    where: { type },
-    orderBy: { createdAt: 'desc' },
-  });
-  return rules.map(formatRule);
+  return getAllRules({ type });
 }
 
 export async function getRuleById(id: number): Promise<Rule | null> {

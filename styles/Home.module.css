@@ -549,6 +549,69 @@
   font-size: 0.8rem;
 }
 
+/* Search styling */
+.searchForm {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+}
+
+.searchButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #0070f3;
+  color: white;
+  border: 1px solid #0070f3;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.searchButton:hover {
+  background-color: #0051a8;
+}
+
+.filtersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+}
+
+.cardItem {
+  width: 100%;
+}
+
+.filterGroup {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filterGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.filterGroup select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
 .sideSelection h2, .typeSelection h2 {
   text-align: center;
   margin-bottom: 1rem;

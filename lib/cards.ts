@@ -78,11 +78,35 @@ export const prepareCardForDB = (card: BaseCard) => {
   };
 };
 
+// Search options interface
+export interface CardSearchOptions {
+  side?: string;
+  type?: string;
+  search?: string;
+}
+
 // CRUD Operations
-export async function getAllCards(): Promise<BaseCard[]> {
+export async function getAllCards(options: CardSearchOptions = {}): Promise<BaseCard[]> {
+  // Build filter based on search options
+  const filter: any = {};
+  
+  // Add side and type filters if provided
+  if (options.side) filter.side = options.side;
+  if (options.type) filter.type = options.type;
+  
+  // Add search term if provided (searches in name and description)
+  if (options.search) {
+    filter.OR = [
+      { name: { contains: options.search } },
+      { description: { contains: options.search } }
+    ];
+  }
+  
   const cards = await prisma.card.findMany({
+    where: filter,
     orderBy: { createdAt: 'desc' },
   });
+  
   return cards.map(formatCard);
 }
 

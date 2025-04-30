@@ -1,23 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import RuleDisplay from '../../components/RuleDisplay';
+import SearchBar from '../../components/SearchBar';
 import styles from '../../styles/Home.module.css';
 import { RuleType } from '../../types/rule';
 
 export default function RulesPage() {
-  const [rules, setRules] = useState([]);
-  const [selectedType, setSelectedType] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const { type: initialType, search: initialSearch } = router.query;
   
+  const [rules, setRules] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Filters state
+  const [searchTerm, setSearchTerm] = useState(initialSearch || '');
+  const [selectedType, setSelectedType] = useState(initialType || 'all');
+  
+  // Fetch rules whenever filters change
   useEffect(() => {
     const fetchRules = async () => {
+      if (!router.isReady) return;
+      
+      setLoading(true);
+      
       try {
-        const url = selectedType === 'all' 
-          ? '/api/rules' 
-          : `/api/rules?type=${selectedType}`;
-          
-        const response = await fetch(url);
+        // Build the query string for filtering
+        const params = new URLSearchParams();
+        if (selectedType && selectedType !== 'all') {
+          params.append('type', selectedType);
+        }
+        if (searchTerm) {
+          params.append('search', searchTerm);
+        }
+        
+        const queryString = params.toString() ? `?${params.toString()}` : '';
+        
+        const response = await fetch(`/api/rules${queryString}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch rules');
@@ -27,14 +48,42 @@ export default function RulesPage() {
         setRules(data);
       } catch (error) {
         console.error('Error fetching rules:', error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
     
     fetchRules();
-  }, [selectedType]);
+  }, [router.isReady, selectedType, searchTerm]);
   
+  // Update URL when filters change
+  useEffect(() => {
+    if (!router.isReady) return;
+    
+    const params = new URLSearchParams();
+    if (selectedType && selectedType !== 'all') {
+      params.append('type', selectedType);
+    }
+    if (searchTerm) {
+      params.append('search', searchTerm);
+    }
+    
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    
+    // Replace URL without reloading the page
+    router.replace(`/rules${queryString}`, undefined, { shallow: true });
+  }, [selectedType, searchTerm, router.isReady]);
+  
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+  
+  const handleTypeChange = (e) => {
+    setSelectedType(e.target.value);
+  };
+  
+  // Group rules by type for display
   const groupRulesByType = () => {
     if (selectedType !== 'all') {
       return { [selectedType]: rules };
@@ -50,20 +99,32 @@ export default function RulesPage() {
     }, {});
   };
   
-  const handleFilterChange = (e) => {
-    setSelectedType(e.target.value);
-  };
-  
   const groupedRules = groupRulesByType();
+  
+  // Generate page title based on filters
+  const getPageTitle = () => {
+    let title = 'Game Rules';
+    
+    if (selectedType && selectedType !== 'all') {
+      title = `${selectedType} Rules`;
+    }
+    
+    if (searchTerm) {
+      title += ` matching "${searchTerm}"`;
+    }
+    
+    return title;
+  };
   
   return (
     <div className={styles.container}>
       <Head>
-        <title>Game Rules | DepthsDB</title>
+        <title>{getPageTitle()} | DepthsDB</title>
+        <meta name="description" content={`Browse ${getPageTitle().toLowerCase()} in the database`} />
       </Head>
       
       <main className={styles.main}>
-        <h1 className={styles.title}>Game Rules</h1>
+        <h1 className={styles.title}>{getPageTitle()}</h1>
         
         <div className={styles.actions}>
           <Link href="/" className={styles.button}>
@@ -74,12 +135,18 @@ export default function RulesPage() {
           </Link>
         </div>
         
-        <div className={styles.formGroup}>
+        {/* Search and Filters */}
+        <SearchBar 
+          onSearch={handleSearch}
+          placeholder="Search by name or description..."
+        />
+        
+        <div className={styles.filterGroup} style={{ width: '100%', maxWidth: '600px' }}>
           <label htmlFor="typeFilter">Filter by Rule Type:</label>
           <select
             id="typeFilter"
             value={selectedType}
-            onChange={handleFilterChange}
+            onChange={handleTypeChange}
             className={styles.select}
           >
             <option value="all">All Types</option>
@@ -93,9 +160,11 @@ export default function RulesPage() {
         
         {loading ? (
           <div className={styles.loading}>Loading rules...</div>
+        ) : error ? (
+          <div className={styles.error}>Error: {error}</div>
         ) : rules.length === 0 ? (
           <div className={styles.description}>
-            <p>No rules found. Create some rules to get started!</p>
+            <p>No rules found matching your criteria.</p>
           </div>
         ) : (
           <div className={styles.indexContainer}>
@@ -104,17 +173,9 @@ export default function RulesPage() {
                 <h2 className={styles.sectionTitle}>{type} Rules</h2>
                 <div className={styles.cardGrid}>
                   {typeRules.map(rule => (
-                    // <Link href={`/rules/${rule.id}`} key={rule.id} className={styles.card}>
+                    <div key={rule.id} >
                       <RuleDisplay rule={rule} showActions={true} />
-                      /* <h3>{rule.name}</h3>
-                      <p className={styles.descriptionCell}>
-                        {rule.description.substring(0, 120)}
-                        {rule.description.length > 120 ? '...' : ''}
-                      </p>
-                      <div className={styles.cardMeta}>
-                        <span>Type: {rule.type}</span>
-                      </div> */
-                    // </Link>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -124,4 +185,4 @@ export default function RulesPage() {
       </main>
     </div>
   );
-};
+}

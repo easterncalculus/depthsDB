@@ -1,24 +1,23 @@
 import prisma from '../../../lib/prisma';
-import { formatCard, prepareCardForDB } from '../../../lib/cards';
+import { formatCard, prepareCardForDB, getAllCards } from '../../../lib/cards';
 
 export default async function handler(req, res) {
   switch (req.method) {
     case 'GET':
       try {
         // Extract query parameters for filtering
-        const { side, type } = req.query;
+        const { side, type, search } = req.query;
         
-        // Build filter object based on query parameters
-        const filter = {};
-        if (side) filter.side = side;
-        if (type) filter.type = type;
+        // Create search options object
+        const searchOptions = {};
+        if (side) searchOptions.side = side;
+        if (type) searchOptions.type = type;
+        if (search) searchOptions.search = search;
         
-        const cards = await prisma.card.findMany({
-          where: filter,
-          orderBy: { createdAt: 'desc' },
-        });
+        // Get cards with search options
+        const cards = await getAllCards(searchOptions);
         
-        res.status(200).json(cards.map(formatCard));
+        res.status(200).json(cards);
       } catch (error) {
         console.error('Error fetching cards:', error);
         res.status(500).json({ error: 'Failed to fetch cards' });

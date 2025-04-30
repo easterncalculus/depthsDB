@@ -4,14 +4,19 @@ import { RuleType } from '../../../types/rule';
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
-      const type = req.query.type ? req.query.type : null;
-      let rules;
+      const { type, search } = req.query;
       
+      // Create search options object
+      const searchOptions = {};
       if (type && Object.values(RuleType).includes(type)) {
-        rules = await getRulesByType(type);
-      } else {
-        rules = await getAllRules();
+        searchOptions.type = type;
       }
+      if (search) {
+        searchOptions.search = search;
+      }
+      
+      // Get rules with search options
+      const rules = await getAllRules(searchOptions);
       
       return res.status(200).json(rules);
     }
