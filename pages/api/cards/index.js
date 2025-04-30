@@ -1,5 +1,6 @@
 import prisma from '../../../lib/prisma';
 import { formatCard, prepareCardForDB, getAllCards } from '../../../lib/cards';
+import { loadAllReferences } from '../../../lib/references';
 
 export default async function handler(req, res) {
   switch (req.method) {
@@ -19,6 +20,13 @@ export default async function handler(req, res) {
         
         // Get cards with search options
         const cards = await getAllCards(searchOptions);
+        
+        // Load references for each card
+        for (const card of cards) {
+          if (card.description) {
+            card.references = await loadAllReferences(card.description);
+          }
+        }
         
         res.status(200).json(cards);
       } catch (error) {

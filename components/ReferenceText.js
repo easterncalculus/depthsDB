@@ -45,59 +45,57 @@ const ReferenceLink = ({ reference, referenceData, children }) => {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
-    // Estimate panel dimensions (we'll refine this after render)
-    const estimatedPanelWidth = 400;
-    const estimatedPanelHeight = 300;
-    
     // Default position is to the right of the link
     let left = rect.right + 10;
-    let top = rect.top - 10;
+    let top = rect.top - 5; // Less offset to stay closer to the link
     
-    // Check if panel would extend beyond right edge
-    if (left + estimatedPanelWidth > windowWidth - 20) {
-      // Position to the left of the link
-      left = Math.max(10, rect.left - estimatedPanelWidth - 10);
-      
-      // If it still doesn't fit, center it
-      if (left < 10) {
-        left = Math.max(10, (windowWidth - estimatedPanelWidth) / 2);
-      }
-    }
-    
-    // Check if panel would extend beyond bottom edge
-    if (top + estimatedPanelHeight > windowHeight - 20) {
-      // Move panel up as needed
-      top = Math.max(10, windowHeight - estimatedPanelHeight - 20);
-    }
+    // For initial positioning, we don't know the panel size yet
+    // so just ensure it's within reasonable bounds
+    left = Math.min(left, windowWidth - 350);
+    top = Math.min(top, windowHeight - 300);
     
     // Make sure top is not above the top of the screen
     top = Math.max(10, top);
+    left = Math.max(10, left);
     
     setPanelPosition({ top, left });
     
     // Refine position after render when we know actual dimensions
     if (hoverPanelRef.current) {
       setTimeout(() => {
-        if (hoverPanelRef.current) {
+        if (hoverPanelRef.current && fullReference) {
           const panelRect = hoverPanelRef.current.getBoundingClientRect();
           
           // Final adjustments if needed
           let adjustedLeft = left;
           let adjustedTop = top;
           
-          if (panelRect.right > windowWidth - 10) {
+          // Determine if we should show to the left or right based on space available
+          if (rect.left > windowWidth / 2) {
+            // More space on left, position left of the link
+            adjustedLeft = Math.max(10, rect.left - panelRect.width - 10);
+          } else if (panelRect.right > windowWidth - 10) {
+            // Not enough space on right, adjust horizontally
             adjustedLeft = Math.max(10, windowWidth - panelRect.width - 10);
           }
           
+          // Vertical positioning
           if (panelRect.bottom > windowHeight - 10) {
-            adjustedTop = Math.max(10, windowHeight - panelRect.height - 10);
+            // Not enough space below, try to position above
+            if (rect.top > panelRect.height + 20) {
+              // Enough space above, position above the link
+              adjustedTop = Math.max(10, rect.top - panelRect.height - 10);
+            } else {
+              // Not enough space above either, position as high as possible
+              adjustedTop = Math.max(10, windowHeight - panelRect.height - 10);
+            }
           }
           
           if (adjustedLeft !== left || adjustedTop !== top) {
             setPanelPosition({ top: adjustedTop, left: adjustedLeft });
           }
         }
-      }, 50);
+      }, 100); // Slightly longer timeout to ensure content is rendered
     }
   };
   
@@ -201,15 +199,11 @@ const ReferenceLink = ({ reference, referenceData, children }) => {
           {isLoading ? (
             <div className={styles.hoverPanelLoading}>Loading...</div>
           ) : fullReference ? (
-            <div className={styles.hoverPanelContent}>
+            <div className={`${styles.hoverPanelContent} ${styles.cardDetailContainer}` }>
               {reference.type === 'c' ? (
-                <div className={`${styles.cardPreview} ${styles[`cardPreview${fullReference.side.charAt(0).toUpperCase() + fullReference.side.slice(1)}`]}`}>
                   <CardDisplay card={fullReference} />
-                </div>
               ) : (
-                <div className={`${styles.rulePreview} ${styles[`rulePreview${fullReference.type}`]}`}>
                   <RuleDisplay rule={fullReference} />
-                </div>
               )}
             </div>
           ) : (

@@ -61,7 +61,7 @@ const CardDisplay = ({ card }) => {
   };
 
   return (
-    <div className={`${styles.cardDisplay} ${styles[`card${card.side}`]} ${styles.cardItem}`}>
+    <div className={`${styles.cardDisplay} ${styles.ruleDisplay} ${styles[`card${card.side}`]} ${styles.cardItem}`}>
       {renderCardImage()}
       <div className={styles.cardContent}>
         {renderCommonInfo()}

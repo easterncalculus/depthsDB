@@ -1,5 +1,6 @@
 import { getAllRules, createRule, getRulesByType } from '../../../lib/rules';
 import { RuleType } from '../../../types/rule';
+import { loadAllReferences } from '../../../lib/references';
 
 export default async function handler(req, res) {
   try {
@@ -20,6 +21,13 @@ export default async function handler(req, res) {
       
       // Get rules with search options
       const rules = await getAllRules(searchOptions);
+      
+      // Load references for each rule
+      for (const rule of rules) {
+        if (rule.description) {
+          rule.references = await loadAllReferences(rule.description);
+        }
+      }
       
       return res.status(200).json(rules);
     }

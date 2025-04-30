@@ -20,8 +20,6 @@
 .hoverPanel {
   position: fixed;
   z-index: 1000;
-  min-width: 250px;
-  max-width: 500px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -29,15 +27,21 @@
   padding: 0;
   overflow: hidden;
   transition: opacity 0.2s ease;
+  width: fit-content;
+  height: fit-content;
+  transform: scale(0.80);
 }
 
 .hoverPanelContent {
-  max-height: 500px;
-  overflow-y: auto;
-  padding: 10px;
-  /* Scale down the content to fit in the panel */
-  transform: scale(0.85);
-  transform-origin: top left;
+  width: fit-content;
+  height: fit-content;
+  display: flex;  /* Use flexbox to center content */
+  justify-content: center;
+  align-items: center;
+  max-width: 95vw; /* Prevent wider than viewport */
+  max-height: 80vh; /* Prevent taller than viewport */
+  padding: 0px;
+  margin: 0px;
 }
 
 .hoverPanelLoading,
@@ -55,7 +59,7 @@
 .cardPreview, 
 .rulePreview {
   font-size: 0.9rem;
-  width: 100%;
+  width: fit-content;
 }
 
 /* Hide the action buttons in preview panels */
@@ -66,29 +70,6 @@
   display: none !important;
 }
 
-/* Override styles for hover panel */
-.hoverPanelContent :global(.p-4) {
-  padding: 8px !important;
-}
-
-.hoverPanelContent :global(.mb-4) {
-  margin-bottom: 8px !important;
-}
-
-.hoverPanelContent :global(.text-xl) {
-  font-size: 1.1rem !important;
-}
-
-.hoverPanelContent :global(.text-gray-700) {
-  font-size: 0.9rem !important;
-  line-height: 1.4 !important;
-}
-
-/* Ensure text doesn't overflow */
-.hoverPanelContent p {
-  max-height: 200px;
-  overflow-y: auto;
-}
 
 /* Card type specific styling */
 .cardPreviewHero {
