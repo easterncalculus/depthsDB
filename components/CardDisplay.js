@@ -17,9 +17,6 @@ const CardDisplay = ({ card }) => {
       <div className={styles.cardDescription}>
         <ReferenceText text={card.description} references={card.references} />
       </div>
-      <div className={styles.cardReference}>
-        <small>Reference ID: #c{card.id}</small>
-      </div>
     </>
   );
 

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import RuleForm from '../../../components/RuleForm';
+import styles from '../../../styles/Home.module.css';
 
 export default function EditRulePage() {
   const router = useRouter();
@@ -54,38 +55,45 @@ export default function EditRulePage() {
   
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p>Loading rule...</p>
+      <div className={styles.container}>
+        <div className={styles.main}>
+          <p>Loading rule...</p>
+        </div>
       </div>
     );
   }
   
   if (error || !rule) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-red-500">Error: {error || 'Rule not found'}</p>
-        <Link href="/rules">
-          <span className="text-blue-500 hover:underline">Back to Rules</span>
-        </Link>
+      <div className={styles.container}>
+        <div className={styles.main}>
+          <p className={styles.error}>Error: {error || 'Rule not found'}</p>
+          <Link href="/rules" className={styles.button}>
+            Back to Rules
+          </Link>
+        </div>
       </div>
     );
   }
   
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <Head>
-        <title>Edit Rule | {rule.name}</title>
+        <title>Edit Rule: {rule.name} | DepthsDB</title>
+        <meta name="description" content={`Edit rule: ${rule.name}`} />
       </Head>
-      
-      <div className="mb-6">
-        <Link href={`/rules/${id}`}>
-          <span className="text-blue-500 hover:underline">← Back to Rule Details</span>
-        </Link>
-      </div>
-      
-      <h1 className="text-3xl font-bold mb-8">Edit Rule: {rule.name}</h1>
-      
-      <RuleForm initialRule={rule} onSubmit={handleUpdateRule} />
+
+      <main className={styles.main}>
+        <h1 className={styles.title}>Edit Rule</h1>
+        
+        <div className={styles.grid}>
+          <Link href={`/rules/${id}`} className={styles.card}>
+            <h2>&larr; Back to Rule Details</h2>
+          </Link>
+        </div>
+
+        <RuleForm initialRule={rule} onSubmit={handleUpdateRule} />
+      </main>
     </div>
   );
-};
+}

@@ -1,6 +1,7 @@
-import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import RuleForm from '../../components/RuleForm';
+import styles from '../../styles/Home.module.css';
 
 export default function CreateRulePage() {
   const handleCreateRule = async (ruleData) => {
@@ -21,14 +22,23 @@ export default function CreateRulePage() {
   };
   
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <Head>
-        <title>Create New Rule</title>
+        <title>Create New Rule | DepthsDB</title>
+        <meta name="description" content="Add a new rule to the database" />
       </Head>
-      
-      <h1 className="text-3xl font-bold mb-8">Create New Rule</h1>
-      
-      <RuleForm onSubmit={handleCreateRule} />
+
+      <main className={styles.main}>
+        <h1 className={styles.title}>Create New Rule</h1>
+        
+        <div className={styles.grid}>
+          <Link href="/rules" className={styles.card}>
+            <h2>&larr; Back to Rules Library</h2>
+          </Link>
+        </div>
+
+        <RuleForm onSubmit={handleCreateRule} />
+      </main>
     </div>
   );
-};
+}

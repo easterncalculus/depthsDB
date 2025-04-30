@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import ReferenceText from '../../../components/ReferenceText';
+import styles from '../../../styles/Home.module.css';
+import RuleDisplay from '../../../components/RuleDisplay';
 
 export default function RuleDetailPage() {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function RuleDetailPage() {
   
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
+      <div className={styles.container}>
         <p>Loading rule details...</p>
       </div>
     );
@@ -66,65 +67,48 @@ export default function RuleDetailPage() {
   
   if (error || !rule) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-red-500">Error: {error || 'Rule not found'}</p>
-        <Link href="/rules">
-          <span className="text-blue-500 hover:underline">Back to Rules</span>
+      <div className={styles.container}>
+        <p className={styles.error}>Error: {error || 'Rule not found'}</p>
+        <Link href="/rules" className={styles.button}>
+          Back to Rules
         </Link>
       </div>
     );
   }
   
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={styles.container}>
       <Head>
         <title>{rule.name} | Rule Details</title>
       </Head>
       
-      <div className="flex justify-between items-center mb-6">
-        <Link href="/rules">
-          <span className="text-blue-500 hover:underline">← Back to Rules</span>
-        </Link>
-        <div className="space-x-2">
-          <Link href={`/rules/${id}/edit`}>
-            <span className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-              Edit
-            </span>
+      <main className={styles.main}>
+        <h1 className={styles.title}>{rule.name}</h1>
+        
+        <div className={styles.actions}>
+          <Link href="/rules" className={styles.button}>
+            Back to Rules
           </Link>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          <Link href={`/rules/${id}/edit`} className={styles.button}>
+            Edit Rule
+          </Link>
+          <button 
+            onClick={handleDelete} 
+            className={styles.deleteButton}
           >
-            Delete
+            Delete Rule
           </button>
         </div>
-      </div>
-      
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-start mb-4">
-          <h1 className="text-3xl font-bold">{rule.name}</h1>
-          <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-            {rule.type}
-          </span>
-        </div>
         
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Description</h2>
-          <div className="text-gray-700 whitespace-pre-line">
-            <ReferenceText text={rule.description} references={rule.references} />
+        <div className={styles.cardDetailContainer}>
+          <RuleDisplay rule={rule} />
+          
+          <div className={styles.metadata}>
+            <div>Created: {new Date(rule.createdAt).toLocaleString()}</div>
+            <div>Updated: {new Date(rule.updatedAt).toLocaleString()}</div>
           </div>
         </div>
-        
-        <div className="mt-6 p-3 bg-gray-50 rounded-md border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 mb-1">Reference This Rule</h3>
-          <code className="bg-gray-100 px-2 py-1 rounded text-sm">#r{rule.id}</code>
-        </div>
-        
-        <div className="mt-6 text-sm text-gray-500">
-          <p>Created: {new Date(rule.createdAt).toLocaleString()}</p>
-          <p>Last updated: {new Date(rule.updatedAt).toLocaleString()}</p>
-        </div>
-      </div>
+      </main>
     </div>
   );
 };

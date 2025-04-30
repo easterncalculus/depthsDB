@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { RuleType } from '../types/rule';
 import EnhancedReferenceAutocomplete from './EnhancedReferenceAutocomplete';
+import styles from '../styles/Home.module.css';
 
 const RuleForm = ({ initialRule, onSubmit }) => {
   const router = useRouter();
@@ -11,6 +12,8 @@ const RuleForm = ({ initialRule, onSubmit }) => {
     type: RuleType.GENERAL
   });
   const descriptionRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
     if (initialRule) {
@@ -28,22 +31,26 @@ const RuleForm = ({ initialRule, onSubmit }) => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
     
     try {
       await onSubmit(rule);
       router.push('/rules');
     } catch (error) {
       console.error('Failed to save rule:', error);
-      alert('Failed to save rule. Please try again.');
+      setError(error.message || 'Failed to save rule. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          Name
-        </label>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      {error && <div className={styles.error}>{error}</div>}
+
+      <div className={styles.formGroup}>
+        <label htmlFor="name">Rule Name:</label>
         <input
           type="text"
           id="name"
@@ -51,21 +58,17 @@ const RuleForm = ({ initialRule, onSubmit }) => {
           value={rule.name}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
       
-      <div className="mb-4">
-        <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-          Rule Type
-        </label>
+      <div className={styles.formGroup}>
+        <label htmlFor="type">Rule Type:</label>
         <select
           id="type"
           name="type"
           value={rule.type}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         >
           {Object.values(RuleType).map(type => (
             <option key={type} value={type}>
@@ -75,11 +78,9 @@ const RuleForm = ({ initialRule, onSubmit }) => {
         </select>
       </div>
       
-      <div className="mb-4">
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          Description
-        </label>
-        <div className="relative">
+      <div className={styles.formGroup}>
+        <label htmlFor="description">Description:</label>
+        <div className={styles.textareaWrapper}>
           <textarea
             id="description"
             name="description"
@@ -89,7 +90,6 @@ const RuleForm = ({ initialRule, onSubmit }) => {
             rows={5}
             ref={descriptionRef}
             placeholder="Type # for card references or $ for rule references"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
           <EnhancedReferenceAutocomplete 
             textAreaRef={descriptionRef}
@@ -102,25 +102,15 @@ const RuleForm = ({ initialRule, onSubmit }) => {
             }}
           />
         </div>
-        <p className="mt-2 text-sm text-gray-500">
+        <small className={styles.formHelp}>
           You can reference cards with <code>#</code> and rules with <code>$</code> followed by text to search.
           Use arrow keys and Enter/Tab to select a reference. References are formatted as <code>&lt;#123|Card Name#&gt;</code> or <code>&lt;$456|Rule Name$&gt;</code>.
-        </p>
+        </small>
       </div>
       
-      <div className="flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          {initialRule ? 'Update Rule' : 'Create Rule'}
+      <div className={styles.formGroup}>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : (initialRule ? 'Update Rule' : 'Create Rule')}
         </button>
       </div>
     </form>

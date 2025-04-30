@@ -87,18 +87,11 @@ export default function CardDetail() {
 
         <div className={styles.cardDetailContainer}>
           <CardDisplay card={card} />
-        </div>
-
-        <div className={styles.referenceInfo}>
-          <h3>Reference This Card</h3>
-          <p>
-            Use <code className={styles.referenceCode}>#c{id}</code> in any rule or card description to link to this card.
-          </p>
-        </div>
-
-        <div className={styles.metadata}>
-          <p>Created: {new Date(card.createdAt).toLocaleString()}</p>
-          <p>Last Updated: {new Date(card.updatedAt).toLocaleString()}</p>
+          
+          <div className={styles.metadata}>
+            <div>Created: {new Date(card.createdAt).toLocaleString()}</div>
+            <div>Last Updated: {new Date(card.updatedAt).toLocaleString()}</div>
+          </div>
         </div>
       </main>
     </div>
