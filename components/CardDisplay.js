@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/Home.module.css';
 import { CardSide, CardType } from '../types/card';
-import ReferenceText from '../utils/references';
+import ReferenceText from './ReferenceText';
 
 const CardDisplay = ({ card }) => {
   // Common card display elements
@@ -15,7 +15,7 @@ const CardDisplay = ({ card }) => {
         )}
       </div>
       <div className={styles.cardDescription}>
-        <ReferenceText text={card.description} />
+        <ReferenceText text={card.description} references={card.references} />
       </div>
       <div className={styles.cardReference}>
         <small>Reference ID: #c{card.id}</small>

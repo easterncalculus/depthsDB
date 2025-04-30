@@ -1,4 +1,5 @@
 import { getRuleById, updateRule, deleteRule } from '../../../lib/rules';
+import { loadAllReferences } from '../../../lib/references';
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -14,6 +15,11 @@ export default async function handler(req, res) {
       
       if (!rule) {
         return res.status(404).json({ message: 'Rule not found' });
+      }
+      
+      // Load all references data
+      if (rule.description) {
+        rule.references = await loadAllReferences(rule.description);
       }
       
       return res.status(200).json(rule);

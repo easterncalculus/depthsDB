@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
+import ReferenceAutocompleteSimple from './ReferenceAutocompleteSimple';
 
 const CardSide = {
   DUNGEON: 'dungeon',
@@ -61,6 +62,7 @@ export default function CardForm({ initialData }) {
   const [showDungeonFields, setShowDungeonFields] = useState(false);
   const [showManaCost, setShowManaCost] = useState(false);
   const [showExits, setShowExits] = useState(false);
+  const descriptionRef = useRef(null);
 
   // Update available card types based on selected side
   useEffect(() => {
@@ -181,16 +183,32 @@ export default function CardForm({ initialData }) {
 
       <div className={styles.formGroup}>
         <label htmlFor="description">Description:</label>
-        <textarea
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-          rows={4}
-        />
+        <div className={styles.textareaWrapper}>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            rows={4}
+            ref={descriptionRef}
+            placeholder="Type # to insert references (e.g., #r for rules, #c for cards)"
+          />
+          <ReferenceAutocompleteSimple 
+            textAreaRef={descriptionRef}
+            onSelectReference={(reference) => {
+              // Automatically update the form data when a reference is selected
+              // The component already updates the textarea value
+              setFormData(prev => ({
+                ...prev,
+                description: descriptionRef.current.value
+              }));
+            }}
+          />
+        </div>
         <small className={styles.formHelp}>
-          You can reference rules with <code>#r123</code> and other cards with <code>#c123</code> (where 123 is the ID).
+          You can reference rules with <code>#r</code> and other cards with <code>#c</code> followed by text to search. 
+          Use arrow keys and Enter/Tab to select a reference.
         </small>
       </div>
 

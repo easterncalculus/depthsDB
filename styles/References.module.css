@@ -1,0 +1,202 @@
+.referenceWrapper {
+  position: relative;
+  display: inline;
+}
+
+.referenceLink {
+  color: #0070f3;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  border-bottom: 1px dashed #0070f3;
+}
+
+.referenceLink:hover {
+  color: #004bb0;
+  border-bottom-style: solid;
+}
+
+.hoverPanel {
+  position: fixed;
+  z-index: 1000;
+  min-width: 250px;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid #e0e0e0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.hoverPanelContent {
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 10px;
+  /* Scale down the content to fit in the panel */
+  transform: scale(0.85);
+  transform-origin: top left;
+}
+
+.hoverPanelLoading,
+.hoverPanelError {
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.hoverPanelError {
+  color: #d32f2f;
+}
+
+.cardPreview, 
+.rulePreview {
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+/* Hide the action buttons in preview panels */
+.cardPreview :global(.flex.justify-end),
+.rulePreview :global(.flex.justify-end),
+.cardPreview :global(.flex.justify-between) :global(.flex.space-x-2),
+.rulePreview :global(.flex.justify-between) :global(.flex.space-x-2) {
+  display: none !important;
+}
+
+/* Override styles for hover panel */
+.hoverPanelContent :global(.p-4) {
+  padding: 8px !important;
+}
+
+.hoverPanelContent :global(.mb-4) {
+  margin-bottom: 8px !important;
+}
+
+.hoverPanelContent :global(.text-xl) {
+  font-size: 1.1rem !important;
+}
+
+.hoverPanelContent :global(.text-gray-700) {
+  font-size: 0.9rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Ensure text doesn't overflow */
+.hoverPanelContent p {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Card type specific styling */
+.cardPreviewHero {
+  border-left: 3px solid #4caf50;
+}
+
+.cardPreviewDungeon {
+  border-left: 3px solid #f44336;
+}
+
+.cardPreviewNeutral {
+  border-left: 3px solid #9e9e9e;
+}
+
+/* Rule type specific styling */
+.rulePreviewGeneral {
+  border-left: 3px solid #2196f3;
+}
+
+.rulePreviewArchetype {
+  border-left: 3px solid #9c27b0;
+}
+
+.rulePreviewType {
+  border-left: 3px solid #ff9800;
+}
+
+.rulePreviewSubtype {
+  border-left: 3px solid #009688;
+}
+
+.rulePreviewKeyword {
+  border-left: 3px solid #607d8b;
+}
+
+/* Autocomplete Styles */
+.autocompletePopover {
+  position: fixed; /* Changed from absolute to fixed */
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  width: 350px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 9999; /* Increased z-index */
+  border: 2px solid #0070f3; /* Highlight color */
+  padding: 4px 0;
+}
+
+.autocompleteResults {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.autocompleteItem {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.autocompleteItem:last-child {
+  border-bottom: none;
+}
+
+.autocompleteItem:hover,
+.autocompleteItem.selected {
+  background-color: #f5f8ff;
+}
+
+.autocompleteItem.selected {
+  background-color: #e6f0ff;
+}
+
+.referenceName {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+}
+
+.referenceType {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.referenceCode {
+  font-size: 0.75rem;
+  color: #0070f3;
+  font-family: monospace;
+}
+
+.autocompleteHeader {
+  padding: 8px 12px;
+  background-color: #e6f0ff;
+  border-bottom: 1px solid #c0d6ff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0070f3;
+}
+
+.autocompleteLoading,
+.autocompleteEmpty {
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}

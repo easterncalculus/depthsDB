@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { formatCard, prepareCardForDB } from '../../../lib/cards';
+import { loadAllReferences } from '../../../lib/references';
 
 const prisma = new PrismaClient();
 
@@ -22,8 +23,16 @@ export default async function handler(req, res) {
           return res.status(404).json({ error: 'Card not found' });
         }
         
-        res.status(200).json(formatCard(card));
+        const formattedCard = formatCard(card);
+        
+        // Load all references data
+        if (formattedCard.description) {
+          formattedCard.references = await loadAllReferences(formattedCard.description);
+        }
+        
+        res.status(200).json(formattedCard);
       } catch (error) {
+        console.error('Error fetching card:', error);
         res.status(500).json({ error: 'Failed to fetch card' });
       }
       break;

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { RuleType } from '../types/rule';
+import ReferenceAutocompleteSimple from './ReferenceAutocompleteSimple';
 
 const RuleForm = ({ initialRule, onSubmit }) => {
   const router = useRouter();
@@ -9,6 +10,7 @@ const RuleForm = ({ initialRule, onSubmit }) => {
     description: '',
     type: RuleType.GENERAL
   });
+  const descriptionRef = useRef(null);
   
   useEffect(() => {
     if (initialRule) {
@@ -77,17 +79,32 @@ const RuleForm = ({ initialRule, onSubmit }) => {
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
           Description
         </label>
-        <textarea
-          id="description"
-          name="description"
-          value={rule.description}
-          onChange={handleChange}
-          required
-          rows={5}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        />
+        <div className="relative">
+          <textarea
+            id="description"
+            name="description"
+            value={rule.description}
+            onChange={handleChange}
+            required
+            rows={5}
+            ref={descriptionRef}
+            placeholder="Type # to insert references (e.g., #r for rules, #c for cards)"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+          <ReferenceAutocompleteSimple 
+            textAreaRef={descriptionRef}
+            onSelectReference={(reference) => {
+              // Automatically update the form data when a reference is selected
+              setRule(prev => ({
+                ...prev,
+                description: descriptionRef.current.value
+              }));
+            }}
+          />
+        </div>
         <p className="mt-2 text-sm text-gray-500">
-          You can reference other rules with <code>#r123</code> and cards with <code>#c123</code> (where 123 is the ID).
+          You can reference other rules with <code>#r</code> and cards with <code>#c</code> followed by text to search. 
+          Use arrow keys and Enter/Tab to select a reference.
         </p>
       </div>
       

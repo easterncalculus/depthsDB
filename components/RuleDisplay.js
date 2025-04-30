@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import ReferenceText from '../utils/references';
+import ReferenceText from './ReferenceText';
 
 const RuleDisplay = ({ rule }) => {
   return (
@@ -13,7 +13,7 @@ const RuleDisplay = ({ rule }) => {
       </div>
       
       <div className="text-gray-700 mb-4">
-        <ReferenceText text={rule.description} />
+        <ReferenceText text={rule.description} references={rule.references} />
       </div>
       
       <div className="flex justify-between items-center mt-4">

@@ -102,13 +102,24 @@ export async function createCard(cardData: Omit<BaseCard, 'id' | 'createdAt' | '
 }
 
 export async function updateCard(id: number, cardData: Partial<BaseCard>): Promise<BaseCard> {
+  // Fetch the existing card first to merge with new data
+  const existingCard = await getCardById(id) as BaseCard;
+  
+  if (!existingCard) {
+    throw new Error(`Card with ID ${id} not found`);
+  }
+  
+  // Remove references property if it exists
+  const { references, ...cardDataWithoutRefs } = cardData as any;
+  
+  // Prepare the card data for the database
   const data = prepareCardForDB({
-    ...await getCardById(id) as BaseCard,
-    ...cardData
+    ...existingCard,
+    ...cardDataWithoutRefs
   });
   
   const updatedCard = await prisma.card.update({
-    where: { id },
+    where: { id: id },
     data
   });
   

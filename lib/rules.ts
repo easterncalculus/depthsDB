@@ -46,9 +46,12 @@ export async function createRule(ruleData: Omit<Rule, 'id' | 'createdAt' | 'upda
 }
 
 export async function updateRule(id: number, ruleData: Partial<Rule>): Promise<Rule> {
+  // Remove any properties that shouldn't be sent to the database
+  const { id: _, createdAt, updatedAt, references, ...dataToUpdate } = ruleData as any;
+  
   const updatedRule = await prisma.rule.update({
-    where: { id },
-    data: ruleData
+    where: { id: id },
+    data: dataToUpdate
   });
   return formatRule(updatedRule);
 }
