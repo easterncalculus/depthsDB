@@ -74,8 +74,14 @@ export default function Home() {
         </p>
 
         <div className={styles.actions}>
-          <Link href="/cards/create" className={styles.button}>
-            Add New Card
+          <Link href="/cards/create">
+            <span className={styles.button}>Add New Card</span>
+          </Link>
+          <Link href="/rules/create">
+            <span className={styles.button}>Add New Rule</span>
+          </Link>
+          <Link href="/rules">
+            <span className={styles.button}>View Game Rules</span>
           </Link>
         </div>
 
@@ -116,9 +122,8 @@ export default function Home() {
             <div className={styles.browseAction}>
               <Link 
                 href={`/cards${getFilterQueryString()}`}
-                className={styles.button}
               >
-                Browse Cards
+                <span className={styles.button}>Browse Cards</span>
               </Link>
             </div>
           )}
